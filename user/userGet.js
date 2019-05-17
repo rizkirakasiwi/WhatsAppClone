@@ -15,6 +15,9 @@ const mySqlDatabase = mysql.createPool({
     multipleStatements:true
 })
 
+router.get('/', (req, res)=>{
+    res.send("Welcome to WhatsApp cline api")
+})
 router.get('/whatsappclone/api/user', (req,res)=>{
     const username = req.body.username
     const password = req.body.password
