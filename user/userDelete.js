@@ -1,46 +1,32 @@
 const express = require('express')
 const router = express.Router()
 const bodyParser = require('body-parser')
-const Joi = require('joi')
-const mysql = require('mysql')
+const fs = require('fs')
+
 
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended:true}))
 
 
-const mySqlDatabase = mysql.createPool({
-    host:'localhost',
-    user:'root',
-    password:'123qwejkl',
-    database:'whatsAppClone',
-    multipleStatements:true
-})
 
 
 router.delete('/whatsappclone/api/user', (req, res)=>{
-    const username = req.body.username
+    const id = req.body.id
 
-    if(username == ""||username == null || username == undefined){
-        const query = "delete from login"
-
-        mySqlDatabase.query(query, (err, rows, fields)=>{
-            if(err){
-                res.send("some error")
-                console.log('error with '+err.message);
-            }else{
-                res.send(`deleted success`)
-            }
-        })
+    if(id == null){
+        res.send("Delele failed, please make sure your id")
     }else{
-        const query = "delete from login where username = ?"
-        mySqlDatabase.query(query, [username], (err, rows, fields)=>{
-            if(err){
-                res.send("some error")
-                console.log('error with '+err.message);
-            }else{
-                res.send(`user ${username} was deleted`)
-            }
-        })
+       fs.readFile('./user/userData.json', 'utf8',function(err, data){
+            const output = JSON.parse(data)
+            const dataFilter = output.filter(function(object){
+                return object.id !== id
+            })
+
+            fs.writeFile('./user/userData.json',JSON.stringify(dataFilter,null,2),function(err){
+                if(err) throw err
+                res.send("Data berhasil dihapus")
+            })
+       })
     }
 })
 module.exports = router
