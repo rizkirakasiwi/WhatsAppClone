@@ -37,7 +37,7 @@ router.get('/whatsappclone/api/user', (req,res)=>{
             const filter = underscore.where(json, {username:username, password:password})
             if(filter != ""){
                 res.send(filter)
-                console.log(filter)
+                console.log("Filter"+JSON.stringify(filter))
             }else{
                 res.send("Data tidak ditemukan")
                 console.log("Data tidak ditemukan")
