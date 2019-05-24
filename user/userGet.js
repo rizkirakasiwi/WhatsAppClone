@@ -21,8 +21,10 @@ router.get('/whatsappclone/api/user', (req,res)=>{
     const password = req.body.password
     
     if(username == null){
-       res.send(json)
-       console.log(json)
+        fs.readFile('./user/userData.json','utf8',function(err,data){
+            if(err)throw err
+            res.send(JSON.parse(data))
+        })
     }else{
         if(password == null){
             const filter = underscore.where(json, {username:username})
