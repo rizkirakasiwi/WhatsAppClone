@@ -3,8 +3,9 @@ const router = express.Router()
 const bodyParser = require('body-parser')
 const Joi = require('joi')
 const fs = require('fs')
-const jsonfile = require('jsonfile')
 const uid = require('uuid/v4')
+const multer = require('multer')
+var upload = multer({ dest: 'user/uploads/' })
 
 
 
@@ -25,9 +26,26 @@ function validasiInput(body){
 }
 
 
+var form = "<!DOCTYPE HTML><html><body>" +
+"<form method='post' action='/upload' enctype='multipart/form-data'>" +
+"<input type='file' name='upload'/>" +
+"<input type='submit' /></form>" +
+"</body></html>";
 
 
+router.get('/upload', (req, res)=>{
+    res.writeHead(200, {'Content-Type': 'text/html' });
+    res.end(form);
+})
 
+
+router.post('/upload', upload.single('upload'), function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+    if(req.file){
+        res.json(req.file)
+    }
+})
 
 router.post('/whatsappclone/api/user', (req, res)=>{
     const key = uid()
