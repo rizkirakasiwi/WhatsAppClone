@@ -11,6 +11,10 @@ const json = JSON.parse(data)
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended:true}))
 
+router.get('/whatsappclone/api/loadImageUser/:imageName',(req,res)=>{
+    const imageName = req.params.imageName
+    fs.createReadStream(`./user/uploads/${imageName}`).pipe(res)
+})
 
 router.get('/', (req, res)=>{
     res.send("Welcome to WhatsApp clone API")

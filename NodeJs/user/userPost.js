@@ -5,7 +5,6 @@ const Joi = require('joi')
 const fs = require('fs')
 const uid = require('uuid/v4')
 const multer = require('multer')
-var upload = multer({ dest: 'user/uploads/' })
 
 
 
@@ -19,35 +18,53 @@ function validasiInput(body){
         nama:Joi.string().min(3).required(),
         email: Joi.string(),
         noHp:Joi.string().min(10).required(),
-        caption:Joi.string()
+        caption:Joi.string(),
+        status:Joi.string(),
+        waktuOnline:Joi.string()
     }
 
     return Joi.validate(body, schema)
 }
 
 
-var form = "<!DOCTYPE HTML><html><body>" +
-"<form method='post' action='/upload' enctype='multipart/form-data'>" +
-"<input type='file' name='upload'/>" +
-"<input type='submit' /></form>" +
-"</body></html>";
+// var form = "<!DOCTYPE HTML><html><body>" +
+// "<form method='post' action='/upload' enctype='multipart/form-data'>" +
+// "<input type='file' name='upload'/>" +
+// "<input type='submit' /></form>" +
+// "</body></html>";
 
 
-router.get('/upload', (req, res)=>{
-    res.writeHead(200, {'Content-Type': 'text/html' });
-    res.end(form);
-})
-
-
-router.post('/upload', upload.single('upload'), function (req, res, next) {
-    // req.file is the `avatar` file
-    // req.body will hold the text fields, if there were any
-    if(req.file){
-        res.json(req.file)
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, 'user/uploads')
+    },
+    filename: function(req, file, cb){
+        cb(null, uid()+'.png')
     }
 })
 
-router.post('/whatsappclone/api/user', (req, res)=>{
+
+const upload = multer({storage:storage})
+
+
+// router.get('/upload', (req, res)=>{
+//     res.writeHead(200, {'Content-Type': 'text/html' });
+//     res.end(form);
+// })
+
+
+// router.post('/upload', upload.single('upload'), function (req, res, next) {
+//     // req.file is the `avatar` file
+//     // req.body will hold the text fields, if there were any
+//     if(!req.file){
+//         res.send("data null")
+//     }
+//     else if(req.file){
+//         res.json(req.file)
+//     }
+// })
+
+router.post('/whatsappclone/api/user',upload.single('upload'), (req, res)=>{
     const key = uid()
     console.log(key)
     const username = req.body.username
@@ -56,8 +73,15 @@ router.post('/whatsappclone/api/user', (req, res)=>{
     const noHp = req.body.noHp
     const email = req.body.email
     const caption = req.body.caption
+    const status = req.body.status
+    const waktuOnline = req.body.waktuOnline
+    var imageName = ""
 
-   
+    if(req.file){
+        imageName = req.file.filename
+    }else{
+        imageName = "null"
+    }
 
     const {error} = validasiInput(req.body)
     if(error) return res.status(400).send(error.details[0].message)
@@ -69,7 +93,10 @@ router.post('/whatsappclone/api/user', (req, res)=>{
         nama:nama,
         noHp:noHp,
         email:email,
-        caption:caption
+        caption:caption,
+        status:status,
+        waktuOnline:waktuOnline,
+        imageName
     }]
            
     fs.readFile('./user/userData.json', 'utf8', function (err, data) {
