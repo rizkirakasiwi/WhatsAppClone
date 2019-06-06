@@ -120,7 +120,7 @@ router.post('/whatsappclone/api/user',upload.single('upload'), (req, res)=>{
             const sendJSON = JSON.stringify(output, null, 2);
             fs.writeFile('./user/userData.json', sendJSON, function(err){
             if (err) throw err;
-            res.send(sendData)
+            res.send("User berhasil ditambahkan!")
             });
         }
     

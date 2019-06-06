@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:gravity="center"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".front.LoginActivity">
+
+    <LinearLayout
+            android:id="@+id/linearLoginParent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+                android:id="@+id/txt_welcome"
+                android:textColor="@color/colorPrimary"
+                android:textSize="25dp"
+                android:text="Welcome to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:id="@+id/txt_logo"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="30dp"
+                android:text="WhatsApp Clone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                app:errorEnabled="true"
+                android:id="@+id/textInputLayoutUsernameLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <EditText
+                    android:id="@+id/edt_usernameLogin"
+                    android:textSize="15dp"
+                    android:hint="Username or Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                app:errorEnabled="true"
+                app:passwordToggleEnabled="true"
+                android:id="@+id/textInputLayoutPasswordLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <EditText
+                    android:id="@+id/edt_passwordLogin"
+                    android:textSize="15dp"
+                    android:inputType="textPassword"
+                    android:hint="Password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+        </android.support.design.widget.TextInputLayout>
+        <Button
+                android:layout_marginTop="16dp"
+                android:id="@+id/btn_login"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:textSize="15dp"
+                android:textColor="@color/putih"
+                android:text="Login"
+                android:textStyle="bold"
+                android:background="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/linearLogin"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@color/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="24dp">
+        <TextView
+                android:id="@+id/txt_register_question"
+                android:textColor="@color/putih"
+                android:text="Don't have an account? "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:id="@+id/txt_register"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:text="Register here"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
