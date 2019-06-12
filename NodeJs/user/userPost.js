@@ -27,42 +27,41 @@ function validasiInput(body){
 }
 
 
-// var form = "<!DOCTYPE HTML><html><body>" +
-// "<form method='post' action='/upload' enctype='multipart/form-data'>" +
-// "<input type='file' name='upload'/>" +
-// "<input type='submit' /></form>" +
-// "</body></html>";
+var form = "<!DOCTYPE HTML><html><body>" +
+"<form method='post' action='/upload' enctype='multipart/form-data'>" +
+"<input type='file' name='upload'/>" +
+"<input type='submit' /></form>" +
+"</body></html>";
 
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, 'user/uploads')
-    },
-    filename: function(req, file, cb){
-        cb(null, uid()+'.png')
-    }
+
+const upload = multer({ storage: multer.memoryStorage({}) })
+
+
+router.get('/whatsappclone/api/user/upload', (req, res)=>{
+    res.writeHead(200, {'Content-Type': 'text/html' });
+    res.end(form);
 })
 
 
-const upload = multer({storage:storage})
-
-
-// router.get('/upload', (req, res)=>{
-//     res.writeHead(200, {'Content-Type': 'text/html' });
-//     res.end(form);
-// })
-
-
-// router.post('/upload', upload.single('upload'), function (req, res, next) {
-//     // req.file is the `avatar` file
-//     // req.body will hold the text fields, if there were any
-//     if(!req.file){
-//         res.send("data null")
-//     }
-//     else if(req.file){
-//         res.json(req.file)
-//     }
-// })
+router.post('/whatsappclone/api/user/upload', upload.single('upload'), 
+function (req, res, next) {
+    if(req.file){
+        var raw = new Buffer(req.file.buffer.toString(), 'base64')
+        const filename = uid()
+        fs.writeFile(`user/uploads/${filename}.jpeg`, raw, function(err){
+            if(err){
+                console.log("error with : "+err.message)
+            }else{
+                res.send(filename)
+                console.log("filename : "+filename)
+            }
+        })
+    }else{
+        console.log("req.file is undefined")
+        res.send("req.file is null")
+    }
+})
 
 router.post('/whatsappclone/api/user',upload.single('upload'), (req, res)=>{
     const key = uid()

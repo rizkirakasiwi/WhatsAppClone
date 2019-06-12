@@ -58,11 +58,10 @@ class LoginActivity : AppCompatActivity() {
             btn_login.text = "Loading.."
 
             Handler().postDelayed({
-                val url = "http://192.168.43.126:2000/whatsappclone/api/user"
                 val username = edt_usernameLogin.text.toString()
                 val password = edt_passwordLogin.text.toString()
 
-                getUserMethod(username, password, url)
+                getUserMethod(username, password)
             },2000)
 
             Log.i(TAG, "on btn_login")
@@ -74,8 +73,9 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-    fun getUserMethod(username:String, password:String ,url:String){
+    fun getUserMethod(username:String, password:String){
         Log.i(TAG, "on getUserMethod")
+        val url = getString(R.string.urlUser)
         val client = OkHttpClient()
         val request = Request.Builder()
             .url(url)

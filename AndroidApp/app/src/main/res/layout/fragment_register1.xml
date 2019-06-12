@@ -58,8 +58,35 @@
                         android:layout_height="wrap_content"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
+        <LinearLayout
+                android:id="@+id/linear_footer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="horizontal"
+                android:background="#20008577"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+            <TextView
+                    android:id="@+id/txt_back1"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_gravity="left|center"
+                    android:layout_marginLeft="24dp"
+                    android:textSize="15dp"
+                    android:text="Login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
+            <TextView
+                    android:layout_marginRight="24dp"
+                    android:id="@+id/txt_next1"
+                    android:layout_gravity="right|center"
+                    android:gravity="right"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15dp"
+                    android:text="Next"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 </FrameLayout>

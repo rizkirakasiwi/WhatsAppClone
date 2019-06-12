@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.kuhaku.whatsappclone.R
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.activity_register.view.*
 import kotlinx.android.synthetic.main.fragment_register1.*
+import kotlinx.android.synthetic.main.fragment_register1.view.*
 
 
 class register1 : Fragment() {
@@ -18,8 +20,27 @@ class register1 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register1, container, false)
+        val view = inflater.inflate(R.layout.fragment_register1, container, false)
+        back1(view)
+        next1(view)
+        return view
     }
+
+
+    fun back1(view:View){
+        view.txt_back1?.setOnClickListener {
+            activity?.onBackPressed()
+        }
+    }
+
+    fun next1(view:View){
+        view.txt_next1?.setOnClickListener {
+            activity?.viewPagerRegister?.setCurrentItem(1, true)
+        }
+    }
+
+
+
 
 
 
