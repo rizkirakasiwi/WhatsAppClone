@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -23,16 +24,11 @@ import com.kuhaku.whatsappclone.model.user
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.fragment_register1.*
 import kotlinx.android.synthetic.main.fragment_register2.*
-import kotlinx.android.synthetic.main.fragment_register3.*
-import kotlinx.android.synthetic.main.fragment_register3.view.*
 import okhttp3.*
-import org.json.JSONArray
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
 
 
-class RegisterActivity : AppCompatActivity(), register1.sendData{
+class RegisterActivity : AppCompatActivity(){
 
 
     val TAG = "RegisterActivity"
@@ -43,77 +39,69 @@ class RegisterActivity : AppCompatActivity(), register1.sendData{
         setContentView(R.layout.activity_register)
 
 
+
+        txt_next.text = "Next"
+        txt_back.text = "Login"
+
+        viewPagerRegister.setOnTouchListener { v, event ->
+            true
+        }
+
         viewPagerRegister.adapter = adapter(supportFragmentManager)
-    }
-
-
-    override fun send(data: String) {
-        Log.i(TAG, "data string $data")
-        register3().displayRecieveData(data)
-    }
-
-
-    fun uploadImage(username:String, password: String){
-        val url = getString(R.string.urlUpload)
-        val MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg")
-
-        val bitmap = (img_register.drawable as BitmapDrawable).bitmap
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val bitmapByteArray = baos.toByteArray()
-        val file = Base64.encodeToString(bitmapByteArray,Base64.DEFAULT)
-
-        val multipartBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("upload","image", RequestBody.create(MEDIA_TYPE_JPEG, file))
-            .build()
-
-        val request = Request.Builder()
-            .url(url)
-            .post(multipartBody)
-            .build()
-
-        OkHttpClient().newCall(request).enqueue(object:Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                Log.i(TAG, "upload image failur ${e.message}")
-                e.printStackTrace()
+        txt_next.setOnClickListener {
+            count+=1
+            if(count == 1) {
+                txt_next.text = "Finish"
+                txt_back.text = "Back"
+            }else if (count > 1) {
+                postData()
+                count = 1
+            }else{
+                Log.i(TAG, "count $count")
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val response = response.body?.string()
+            viewPagerRegister.currentItem = count
 
-                Log.i(TAG, "Response : $response")
-                postData(response)
+        }
 
+        txt_back.setOnClickListener {
+            count -= 1
+            if(count == 0){
+                txt_back.text = "Login"
+                txt_next.text = "Next"
+            }else if(count < 0){
+                onBackPressed()
+            }else{
+                Log.i(TAG, "count $count")
             }
-        })
+
+            viewPagerRegister.currentItem = count
+        }
     }
 
 
-
-    fun postData(imageName:String?){
+    fun postData(){
         val url = getString(R.string.urlUser)
-        Log.i(TAG,"on postData imageName = $imageName")
 
         val username = edt_usernameRegister?.text.toString()
         val password = edt_passwordRegister?.text.toString()
         val nama = edt_namaRegister?.text.toString()
         val noHp = edt_PhoneNumberRegister?.text.toString()
         val email = edt_EmailRegister?.text.toString()
-        val caption = edt_captionRegister?.text.toString()
+        val caption = "Nothing"
         val status = "Offline"
         val waktuOnline = "Never"
+        val imageName = "Nothing"
 
         if(username == "null" && password == "null"){
             Log.i(TAG, "username null")
         }else {
 
-            val users = arrayOf(
-                user(
-                    "", username, password, nama,
+            val users = user(
+                    "Nothing", username, password, nama,
                     email, noHp, caption, status, waktuOnline, imageName
                 )
-            ).toList()
+
 
             val json = Gson().toJson(users)
 
@@ -148,8 +136,8 @@ class RegisterActivity : AppCompatActivity(), register1.sendData{
 
 
 
-class adapter(fragmenManager:FragmentManager):FragmentPagerAdapter(fragmenManager){
-    val fragment = listOf(register1(), register2(), register3())
+class adapter(fragmenManager:FragmentManager):FragmentPagerAdapter(fragmenManager) {
+    val fragment = listOf(register1(), register2())
 
     override fun getCount(): Int {
         return fragment.size
@@ -158,4 +146,51 @@ class adapter(fragmenManager:FragmentManager):FragmentPagerAdapter(fragmenManage
     override fun getItem(p0: Int): Fragment {
         return fragment[p0]
     }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+//    fun uploadImage(username:String, password: String){
+//        val url = getString(R.string.urlUpload)
+//        val MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg")
+//
+//        val bitmap = (img_register.drawable as BitmapDrawable).bitmap
+//        val baos = ByteArrayOutputStream()
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+//        val bitmapByteArray = baos.toByteArray()
+//        val file = Base64.encodeToString(bitmapByteArray,Base64.DEFAULT)
+//
+//        val multipartBody = MultipartBody.Builder()
+//            .setType(MultipartBody.FORM)
+//            .addFormDataPart("upload","image", RequestBody.create(MEDIA_TYPE_JPEG, file))
+//            .build()
+//
+//        val request = Request.Builder()
+//            .url(url)
+//            .post(multipartBody)
+//            .build()
+//
+//        OkHttpClient().newCall(request).enqueue(object:Callback{
+//            override fun onFailure(call: Call, e: IOException) {
+//                Log.i(TAG, "upload image failur ${e.message}")
+//                e.printStackTrace()
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                val response = response.body?.string()
+//
+//                Log.i(TAG, "Response : $response")
+//                postData(response)
+//
+//            }
+//        })
+//    }

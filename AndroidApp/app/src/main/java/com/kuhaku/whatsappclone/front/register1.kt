@@ -15,13 +15,11 @@ import com.kuhaku.whatsappclone.model.db_user
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.fragment_register1.*
 import kotlinx.android.synthetic.main.fragment_register1.view.*
-import kotlinx.android.synthetic.main.fragment_register3.view.*
 import org.jetbrains.anko.db.insert
 
 
 class register1 : Fragment() {
 
-    lateinit var sendMessage:sendData
     val TAG = "RegisterFragment1"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,43 +27,12 @@ class register1 : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_register1, container, false)
-        view.txt_next1.setOnClickListener {
-            activity?.viewPagerRegister?.currentItem = 1
-            sendMessage.send(view.edt_usernameRegister?.text.toString())
-        }
+        val password = view.edt_passwordRegister.text.toString()
+        val confirmPassword = view.edt_passwordConfirmedRegister.text.toString()
 
-        view.txt_back1.setOnClickListener {
-            activity?.onBackPressed()
-        }
         return view
     }
 
-
-    interface sendData{
-        fun send(data:String)
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        Log.i(TAG, "on Attach")
-
-        try {
-            sendMessage = activity as sendData
-        }catch (e:ClassCastException){
-
-        }
-    }
-
-
-    fun saveUser(view: View){
-        activity?.database?.use{
-            insert(db_user.TABLE_USER,
-                db_user.USERNAME to view.edt_usernameRegister.text.toString(),
-                db_user.PASSWORD to view.edt_passwordRegister.text.toString()
-            )
-        }
-    }
 
 }
 

@@ -13,13 +13,15 @@ router.use(bodyParser.urlencoded({extended:true}))
 
 function validasiInput(body){
     const schema = {
+        id:Joi.string(),
         username: Joi.string().min(3).required(),
         password:Joi.string().min(6).required(),
-        nama:Joi.string().min(3).required(),
+        nama:Joi.string(),
         email: Joi.string(),
-        noHp:Joi.string().min(10).required(),
+        noHp:Joi.string(),
         caption:Joi.string(),
         status:Joi.string(),
+        imageName:Joi.string(),
         waktuOnline:Joi.string()
     }
 

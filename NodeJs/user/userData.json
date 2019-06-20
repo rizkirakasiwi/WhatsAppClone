@@ -7,9 +7,9 @@
     "noHp": "085794626977",
     "email": "rizkirakasiwi@gmail.com",
     "caption": "life is never flat",
-    "status":"Offline",
-    "waktuOnline":"Never",
-    "imageName":"null"
+    "status": "Offline",
+    "waktuOnline": "Never",
+    "imageName": "null"
   },
   {
     "id": "a3056cf0-b9cc-4a9a-9a5b-3815ada99f17",
@@ -19,9 +19,9 @@
     "noHp": "085794626977",
     "email": "rizkirakasiwi@gmail.com",
     "caption": "life is never flat",
-    "status":"Offline",
-    "waktuOnline":"Never",
-    "imageName":"null"
+    "status": "Offline",
+    "waktuOnline": "Never",
+    "imageName": "null"
   },
   {
     "id": "5937f594-a1f5-4e92-af4e-afd364c09bbe",
@@ -31,8 +31,32 @@
     "noHp": "085794626977",
     "email": "rizkirakasiwi@gmail.com",
     "caption": "life is never flat",
-    "status":"Offline",
-    "waktuOnline":"Never",
-    "imageName":"null"
+    "status": "Offline",
+    "waktuOnline": "Never",
+    "imageName": "null"
+  },
+  {
+    "id": "9303b2a2-d381-4f84-9b89-bfd8dfe78bd6",
+    "username": "rizkirakasiwi09",
+    "password": "abah1998",
+    "nama": "Rizki Rakasiwi",
+    "noHp": "085794626977",
+    "email": "rizkirakasiwirizki@gmail.com",
+    "caption": "Nothing",
+    "status": "Offline",
+    "waktuOnline": "Never",
+    "imageName": "Nothing"
+  },
+  {
+    "id": "80801455-6b28-49a2-9821-63ef498531cd",
+    "username": "rizkirakasiwi090",
+    "password": "abah1998",
+    "nama": "Rizki Rakasiwi",
+    "noHp": "085794626977",
+    "email": "rizkirakasiwirizki@gmail.com",
+    "caption": "Nothing",
+    "status": "Offline",
+    "waktuOnline": "Never",
+    "imageName": "Nothing"
   }
 ]
