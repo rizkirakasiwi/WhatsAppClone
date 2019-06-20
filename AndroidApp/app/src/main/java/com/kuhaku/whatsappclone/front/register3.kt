@@ -17,6 +17,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.kuhaku.whatsappclone.R
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.fragment_register1.*
+import kotlinx.android.synthetic.main.fragment_register1.view.*
 import kotlinx.android.synthetic.main.fragment_register3.*
 import kotlinx.android.synthetic.main.fragment_register3.view.*
 import okhttp3.*
@@ -29,20 +31,23 @@ class register3 : Fragment() {
 
 
     val TAG = "RegisterFragment3"
-
+    lateinit var dataData:String
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceStdate: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_register3, container, false)
 
-        view.txt_next3?.setOnClickListener {
-            upload(view)
+        view.txt_next3.setOnClickListener {
+            Log.i(TAG, "Register Finish")
         }
 
+        view.txt_back3.setOnClickListener {
+            activity?.viewPagerRegister?.currentItem = 1
+        }
 
         view.img_register?.setOnClickListener {
             Log.i(TAG, "on img register clicked")
@@ -50,16 +55,16 @@ class register3 : Fragment() {
         }
 
 
-
-        back(view)
-
         return view
     }
 
+    fun displayRecieveData(data:String){
+        dataData = data
+        Log.i(TAG, "data $data")
+    }
 
 
     val CAMERA_REQUEST_CODE = 1
-    var path:Uri?=null
 
     fun ambilGambar(){
         Log.i(TAG, "on ambilGambar function")
@@ -81,45 +86,4 @@ class register3 : Fragment() {
     }
 
 
-    fun upload(view:View){
-        Log.i(TAG, "onUpload: $path")
-
-        val url = getString(R.string.urlUpload)
-        val bitmap = (view.img_register.drawable as BitmapDrawable).bitmap
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream)
-        val bitmapArray = byteArrayOutputStream.toByteArray()
-
-        val file = Base64.encodeToString(bitmapArray, Base64.DEFAULT)
-
-        val mediaType = MediaType.parse("image/png")
-
-        val multipartBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("upload", "image", RequestBody.create(mediaType, file))
-            .build()
-
-        val request = Request.Builder()
-            .url(url)
-            .post(multipartBody)
-            .build()
-
-        OkHttpClient().newCall(request).enqueue(object :Callback{
-            override fun onResponse(call: Call, response: Response) {
-                Log.i(TAG, response.body?.string())
-            }
-
-            override fun onFailure(call: Call, e: IOException) {
-                Log.i(TAG, "${e.message}")
-                e.stackTrace
-            }
-        })
-    }
-
-    fun back(view: View){
-        view.txt_back3.setOnClickListener {
-            activity?.viewPagerRegister?.setCurrentItem(1, true)
-        }
-
-    }
 }

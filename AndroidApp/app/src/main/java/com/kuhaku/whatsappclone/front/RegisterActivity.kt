@@ -15,6 +15,8 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.util.Base64
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import com.google.gson.Gson
 import com.kuhaku.whatsappclone.R
 import com.kuhaku.whatsappclone.model.user
@@ -22,125 +24,128 @@ import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.fragment_register1.*
 import kotlinx.android.synthetic.main.fragment_register2.*
 import kotlinx.android.synthetic.main.fragment_register3.*
+import kotlinx.android.synthetic.main.fragment_register3.view.*
 import okhttp3.*
 import org.json.JSONArray
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 
-class RegisterActivity : AppCompatActivity() {
+
+class RegisterActivity : AppCompatActivity(), register1.sendData{
+
 
     val TAG = "RegisterActivity"
+
     var count = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+
         viewPagerRegister.adapter = adapter(supportFragmentManager)
-
-    }
-
-    fun next(){
-        txt_next1.setOnClickListener {
-            Log.i(TAG,"txt_Next was clicked")
-
-//
-//            val email = edt_EmailRegister?.text.toString()
-//            val name = edt_namaRegister.text.toString()
-//            val noHp = edt_PhoneNumberRegister.text.toString()
-//            val username = edt_usernameRegister.text.toString()
-//            val confirmationPass = edt_passwordConfirmedRegister.text.toString()
-//            val caption = edt_captionRegister?.text.toString()
-//            val pass = edt_passwordRegister?.text.toString()
-
-
-            count++
-            Log.i(TAG, "count = $count")
-            if(count==1){
-                Log.i(TAG, "count = $count")
-                viewPagerRegister.setCurrentItem(count, true)
-            }else{
-                val bitmap = (img_register.drawable as BitmapDrawable).bitmap
-                val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-                val file = baos.toByteArray()
-                val file2 = Base64.encodeToString(file, Base64.DEFAULT)
-
-                uploadImage(file2)
-                count = 2
-                Log.i(TAG, "Register Finish")
-            }
-
-        }
     }
 
 
+    override fun send(data: String) {
+        Log.i(TAG, "data string $data")
+        register3().displayRecieveData(data)
+    }
 
-    fun uploadImage(image:String){
-        val MEDIA_TYPE_PNG = MediaType.parse("image/png")
-        val client = OkHttpClient()
+
+    fun uploadImage(username:String, password: String){
         val url = getString(R.string.urlUpload)
-        val requestBody = MultipartBody.Builder()
+        val MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg")
+
+        val bitmap = (img_register.drawable as BitmapDrawable).bitmap
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val bitmapByteArray = baos.toByteArray()
+        val file = Base64.encodeToString(bitmapByteArray,Base64.DEFAULT)
+
+        val multipartBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("upload", "upload", RequestBody.create(MEDIA_TYPE_PNG, image))
+            .addFormDataPart("upload","image", RequestBody.create(MEDIA_TYPE_JPEG, file))
             .build()
 
         val request = Request.Builder()
             .url(url)
-            .post(requestBody)
+            .post(multipartBody)
             .build()
 
-        client.newCall(request).enqueue(object:Callback{
+        OkHttpClient().newCall(request).enqueue(object:Callback{
             override fun onFailure(call: Call, e: IOException) {
-                Log.i(TAG, e.message)
-                e.stackTrace
+                Log.i(TAG, "upload image failur ${e.message}")
+                e.printStackTrace()
             }
 
             override fun onResponse(call: Call, response: Response) {
-                Log.i(TAG,"response ${response.body?.string()}")
+                val response = response.body?.string()
+
+                Log.i(TAG, "Response : $response")
+                postData(response)
+
             }
         })
     }
 
 
 
-    fun postData(url:String){
-        Log.i(TAG,"on postData")
-        val username = edt_usernameRegister.text.toString()
-        val password = edt_passwordRegister.text.toString()
-        val nama = edt_namaRegister.text.toString()
-        val noHp = edt_PhoneNumberRegister.text.toString()
-        val email = edt_EmailRegister.text.toString()
-        val caption = edt_captionRegister.text.toString()
+    fun postData(imageName:String?){
+        val url = getString(R.string.urlUser)
+        Log.i(TAG,"on postData imageName = $imageName")
+
+        val username = edt_usernameRegister?.text.toString()
+        val password = edt_passwordRegister?.text.toString()
+        val nama = edt_namaRegister?.text.toString()
+        val noHp = edt_PhoneNumberRegister?.text.toString()
+        val email = edt_EmailRegister?.text.toString()
+        val caption = edt_captionRegister?.text.toString()
         val status = "Offline"
         val waktuOnline = "Never"
 
-        val users = arrayOf(user("",username, password, nama, email, noHp, caption, status, waktuOnline, ""))
-        val json = Gson().toJson(users)
+        if(username == "null" && password == "null"){
+            Log.i(TAG, "username null")
+        }else {
+
+            val users = arrayOf(
+                user(
+                    "", username, password, nama,
+                    email, noHp, caption, status, waktuOnline, imageName
+                )
+            ).toList()
+
+            val json = Gson().toJson(users)
+
+            Log.i(TAG, "json $json")
 
 
-        val JSON = MediaType.parse("application/json; charset=utf-8")
-        val body = RequestBody.create(JSON, json)
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-        client.newCall(request).enqueue(object:Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                Log.i(TAG, "On RegisterActivity onFun postData onFailur ${e.message}")
-            }
+            val JSON = MediaType.get("application/json; charset=utf-8")
 
-            override fun onResponse(call: Call, response: Response) {
-                val message = response.body?.string()
-                Log.i(TAG, message)
-            }
-        })
+            val body = RequestBody.create(JSON, json)
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url(url)
+                .post(body)
+                .build()
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.i(TAG, "On RegisterActivity onFun postData onFailur ${e.message}")
+                }
 
+                override fun onResponse(call: Call, response: Response) {
+                    val message = response.body?.string()
+                    Log.i(TAG, message)
+                }
+            })
 
+        }
 
     }
+
 }
+
+
 
 
 class adapter(fragmenManager:FragmentManager):FragmentPagerAdapter(fragmenManager){

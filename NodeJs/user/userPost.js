@@ -63,7 +63,7 @@ function (req, res, next) {
     }
 })
 
-router.post('/whatsappclone/api/user',upload.single('upload'), (req, res)=>{
+router.post('/whatsappclone/api/user', (req, res)=>{
     const key = uid()
     console.log(key)
     const username = req.body.username
@@ -74,13 +74,7 @@ router.post('/whatsappclone/api/user',upload.single('upload'), (req, res)=>{
     const caption = req.body.caption
     const status = req.body.status
     const waktuOnline = req.body.waktuOnline
-    var imageName = ""
-
-    if(req.file){
-        imageName = req.file.filename
-    }else{
-        imageName = "null"
-    }
+    var imageName = req.body.imageName
 
     const {error} = validasiInput(req.body)
     if(error) return res.status(400).send(error.details[0].message)
