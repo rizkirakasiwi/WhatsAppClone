@@ -5,6 +5,7 @@ const Joi = require('joi')
 const fs = require('fs')
 const uid = require('uuid/v4')
 const multer = require('multer')
+const underscore = require('underscore')
 
 
 
@@ -120,6 +121,63 @@ router.post('/whatsappclone/api/user', (req, res)=>{
         }
     
       });
+})
+
+
+router.post("/whatsappclone/api/user/username", (req, res)=>{
+    const username = req.body.username
+
+    if(username == ""||username==null||username==undefined){
+        res.send("Username empty")
+    }else{
+        fs.readFile('./user/userData.json','utf8', function(err, data){
+            const json = JSON.parse(data)
+
+            const find = underscore.where(json, {username:username})
+            if(find != ""){
+                res.send("Username already exist")
+                console.log("Username already exist");
+            }else{
+                res.send("Username ok")
+                console.log("Username ok");
+            }
+        })
+    }
+})
+
+router.post("/whatsappclone/api/user/login", (req, res)=>{
+    const username = req.body.username
+    const password = req.body.password
+
+    if(username==""||username==null||username==undefined){
+        res.send("Username empty")
+        console.log("Username empty");
+        
+    }else if(password==""||password==null||username==undefined){
+        res.send("Password empty")
+        console.log("Password empty");
+        
+    }else if(username==""||username==null||username==undefined && 
+    password==""||password==null||username==undefined){
+        res.send("Username and password empty")
+        console.log("Username and password empty");
+    }else{
+        fs.readFile('./user/userData.json', 'utf8', function(err, data){
+            const json = JSON.parse(data)
+    
+            const find = underscore.where(json, {username:username, password:password})
+            if(find != ""){
+                res.send(find)
+                console.log(find);
+                
+            }else{
+                res.send("User not found")
+                console.log("User not found");
+            }
+            
+        })
+    }
+
 })
 
 module.exports = router

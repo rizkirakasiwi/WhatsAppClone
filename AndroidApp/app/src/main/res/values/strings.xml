@@ -3,5 +3,7 @@
 
     <string name="urlUpload">http://192.168.43.126:2000/whatsappclone/api/user/upload</string>
     <string name="urlUser">http://192.168.43.126:2000/whatsappclone/api/user</string>
+    <string name="urlUsername">http://192.168.43.126:2000/whatsappclone/api/user/username</string>
+    <string name="urlLogin">http://192.168.43.126:2000/whatsappclone/api/user/login</string>
 
 </resources>

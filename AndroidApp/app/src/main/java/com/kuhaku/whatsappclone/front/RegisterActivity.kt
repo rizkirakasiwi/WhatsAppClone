@@ -14,17 +14,22 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.google.gson.Gson
 import com.kuhaku.whatsappclone.R
+import com.kuhaku.whatsappclone.model.Username
 import com.kuhaku.whatsappclone.model.user
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.fragment_register1.*
+import kotlinx.android.synthetic.main.fragment_register1.view.*
 import kotlinx.android.synthetic.main.fragment_register2.*
 import okhttp3.*
+import org.jetbrains.anko.support.v4.runOnUiThread
 import java.io.IOException
 
 
@@ -39,7 +44,6 @@ class RegisterActivity : AppCompatActivity(){
         setContentView(R.layout.activity_register)
 
 
-
         txt_next.text = "Next"
         txt_back.text = "Login"
 
@@ -47,9 +51,13 @@ class RegisterActivity : AppCompatActivity(){
             true
         }
 
+
+
         viewPagerRegister.adapter = adapter(supportFragmentManager)
         txt_next.setOnClickListener {
             count+=1
+            checkingForCorrectPassword()
+            passwordCheck()
             if(count == 1) {
                 txt_next.text = "Finish"
                 txt_back.text = "Back"
@@ -110,6 +118,7 @@ class RegisterActivity : AppCompatActivity(){
 
             val JSON = MediaType.get("application/json; charset=utf-8")
 
+
             val body = RequestBody.create(JSON, json)
             val client = OkHttpClient()
             val request = Request.Builder()
@@ -129,6 +138,92 @@ class RegisterActivity : AppCompatActivity(){
 
         }
 
+    }
+
+
+    fun checkingForCorrectPassword(){
+
+        val url = getString(R.string.urlUsername)
+
+
+        val username = Username(edt_usernameRegister?.text.toString())
+
+        val json = Gson().toJson(username)
+        Log.i(TAG, json)
+
+        val JSON = MediaType.get("application/json; charset=utf-8")
+
+        val body = RequestBody.create(JSON, json)
+
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        client.newCall(request).enqueue(object: Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.i(TAG, "register1 checkinForCorrectPassword onFailure ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                Log.i(TAG, "body $body")
+                if(body=="Username already exist") {
+                    runOnUiThread {
+                        textInputLayouUsernametRegister.error = body
+                        count = 0
+                        viewPagerRegister.currentItem = count
+                    }
+                }else if(body=="Username empty"){
+                    runOnUiThread {
+                        textInputLayouUsernametRegister.error = body
+                        count = 0
+                        viewPagerRegister.currentItem = count
+                    }
+                }else{
+                    runOnUiThread {
+                        textInputLayouUsernametRegister.isErrorEnabled = false
+                    }
+                }
+            }
+        })
+
+    }
+
+    fun passwordCheck(){
+        val passwordA = edt_passwordRegister.text.toString()
+        val passwordB = edt_passwordConfirmedRegister.text.toString()
+
+        if(passwordA==""||passwordA==null){
+            runOnUiThread {
+                textInputLayoutPasswordRegister.error = "Password empty"
+                count = 0
+                viewPagerRegister.currentItem = count
+            }
+        }else if(passwordB==""||passwordB == null){
+            runOnUiThread {
+                textInputLayoutPasswordRegister.error = "Comfirmation password empty"
+                count = 0
+                viewPagerRegister.currentItem = count
+            }
+        }else{
+            runOnUiThread {
+                textInputLayoutPasswordRegister.isErrorEnabled = false
+            }
+
+            if(passwordA != passwordB){
+                Log.i(TAG,"Password not valid")
+                runOnUiThread {
+                    textInputLayoutConfirmedPasswordRegister.error = "Password is not valid"
+                    count = 0
+                    viewPagerRegister.currentItem = count
+                }
+
+            }else{
+                Log.i(TAG, "Password valid")
+            }
+        }
     }
 
 }
